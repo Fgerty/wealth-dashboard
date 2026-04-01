@@ -25,7 +25,7 @@
             <div class="flex items-center gap-6">
                 <div>
                     <h1 class="text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Wealth<span class="text-indigo-600">Architect</span></h1>
-                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">HORIZONTAL FLOW | DATA PERSISTENT</p>
+                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">TIME HORIZONTAL FLOW | By Nutthapoj S. With Gemini</p>
                 </div>
                 <button onclick="resetToDefaults()" class="px-4 py-2 bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-200">
                     Reset All Data
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-12 gap-8">
+        <div class="grid grid-cols-12 gap-8 mb-12">
             <div class="col-span-6 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden sync-height-bottom flex flex-col">
                 <div class="overflow-y-auto flex-grow custom-scrollbar">
                     <table class="w-full text-left text-[11px]">
@@ -77,10 +77,11 @@
                             <tr>
                                 <th class="px-6 py-5">Scenario</th>
                                 <th class="px-2 py-5 text-center">Active</th>
+                                <th class="px-4 py-5 text-center">Input (%)</th>
                                 <th class="px-4 py-5 text-center">Interest Gained (%)</th>
                                 <th class="px-4 py-5 text-center">Years to Goal</th>
                                 <th class="px-6 py-5 text-right">Wealth</th>
-                                <th class="px-6 py-5 text-right">Return Ratio</th>
+                                <th class="px-6 py-5 text-right">Return Ratio (%) </th>
                             </tr>
                         </thead>
                         <tbody id="summaryTableBody" class="divide-y divide-slate-50 font-bold"></tbody>
@@ -100,6 +101,42 @@
                 </div>
             </div>
         </div>
+
+        <footer class="mt-12 mb-8 bg-slate-100 p-8 rounded-[2rem] border border-slate-200">
+            <div class="flex flex-col md:flex-row gap-8 items-start mb-8">
+                <div class="shrink-0">
+                    <span class="px-3 py-1 bg-slate-200 text-slate-600 text-[10px] font-black rounded-full uppercase tracking-widest">Model Limitations</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <h4 class="text-xs font-black text-slate-900 uppercase mb-2 italic underline decoration-indigo-500 underline-offset-4">Fixed Rate Assumptions</h4>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">This app assumes a constant annual ROI. Real markets are volatile; actual year-on-year returns fluctuate significantly, which can drastically alter long-term compounding outcomes.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-slate-900 uppercase mb-2 italic underline decoration-indigo-500 underline-offset-4">External Costs</h4>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">Calculations do not account for capital gains taxes, brokerage fees, or management expense ratios (MER). These "leakages" often reduce real-world net wealth by 15-30% or more over long periods.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-slate-900 uppercase mb-2 italic underline decoration-indigo-500 underline-offset-4">Predictive Risk</h4>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">The "Real Value" (Inflation Adjuster) uses a static percentage. Hyperinflation or shifts in purchasing power are not modeled. This is a mathematical projection, not financial advice.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-8">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Developer Contact</span>
+                        <div class="flex items-center gap-4">
+                            <a href="https://www.facebook.com/nutthapoj" target="_blank" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors">Facebook</a>
+                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                            <a href="mailto:nutthapoj.s@gmail.com" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors">nutthapoj.s@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Wealth Architect Pro © 2026 | Simulation Only</p>
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -108,7 +145,7 @@
         const palette = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6', '#6366f1'];
 
         const DEFAULT_PORTFOLIOS = [
-            { id: 1, name: 'Base Plan', initial: 10000, monthly: 500, roi: 7, startYear: 0, color: palette[0] }
+            { id: 1, name: 'Base Plan', initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: palette[0] }
         ];
 
         let portfolios = [];
@@ -158,7 +195,7 @@
         function addPortfolio() {
             if (portfolios.length >= 10) return;
             const color = palette[portfolios.length % palette.length];
-            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 5000, monthly: 200, roi: 8, startYear: 0, color: color });
+            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: color });
             renderControls(); 
             updateAll();
         }
@@ -249,6 +286,7 @@
                 const totalInput = final.p;
                 const interestGained = Math.max(0, final.y - totalInput);
                 const intProp = final.y > 0 ? ((interestGained / final.y) * 100).toFixed(1) : "0";
+                const inputProp = final.y > 0 ? ((totalInput / final.y) * 100).toFixed(1) : "0";
                 const returnRatio = totalInput > 0 ? ((final.y / totalInput) * 100).toFixed(0) : "0";
 
                 const goalStatus = yearReachedGoal !== null ? `${yearReachedGoal}y` : "—";
@@ -258,6 +296,7 @@
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-5 text-slate-900 uppercase text-[10px]">${p.name}</td>
                         <td class="px-2 py-5 text-center">${Math.max(0, maxYears - p.startYear)}y</td>
+                        <td class="px-4 py-5 text-center text-slate-500">$${totalInput.toLocaleString()} (${inputProp}%)</td>
                         <td class="px-4 py-5 text-center text-indigo-400">$${interestGained.toLocaleString()} (${intProp}%)</td>
                         <td class="px-4 py-5 text-center text-slate-600">${goalStatus}${checkmark}</td>
                         <td class="px-6 py-5 text-right font-black" style="color: ${p.color}">$${final.y.toLocaleString()}</td>
@@ -265,7 +304,6 @@
                     </tr>
                 `;
 
-                // Pie charts in middle column
                 const pDiv = document.createElement('div');
                 pDiv.className = "flex flex-col items-center shrink-0 w-full mb-2";
                 pDiv.innerHTML = `<div class="w-14 h-14 relative"><canvas id="pie-${p.id}"></canvas></div><span class="text-[7px] font-black text-slate-400 mt-1 uppercase tracking-tighter text-center truncate w-full px-2">${p.name}</span>`;
@@ -293,11 +331,19 @@
                 data: { datasets: [...datasets, { label: 'Goal', data: [{x:0, y:goal}, {x:maxYears, y:goal}], borderColor: '#cbd5e1', borderDash: [6, 6], borderWidth: 2, pointRadius: 0 }] },
                 options: {
                     responsive: true, maintainAspectRatio: false, animation: false,
+                    interaction: { mode: 'index', intersect: false },
                     scales: {
                         x: { type: 'linear', min: 0, max: maxYears },
                         y: { beginAtZero: true, max: globalPeakWealth, ticks: { callback: v => '$' + v.toLocaleString() } }
                     },
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.parsed.y.toLocaleString()}` } } }
+                    plugins: { 
+                        legend: { display: false }, 
+                        tooltip: { 
+                            callbacks: { 
+                                label: c => `${c.dataset.label}: $${c.parsed.y.toLocaleString()}` 
+                            } 
+                        } 
+                    }
                 }
             });
 
@@ -322,7 +368,7 @@
                                 label: function(context) {
                                     const data = context.raw;
                                     const wealthFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.wealth);
-                                    return `${context.dataset.label}: ${data.x}yr @ ${data.y}% (Wealth: ${wealthFormatted})`;
+                                    return `${context.dataset.label}: ${data.x} active year @ ${data.y}% (Wealth: ${wealthFormatted})`;
                                 }
                             } 
                         }
