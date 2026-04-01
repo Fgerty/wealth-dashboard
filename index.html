@@ -2,86 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wealth Architect Pro - Professional Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
-        .main-container { max-width: 1920px; margin: 0 auto; padding: 24px; }
-        .sync-height-top { height: 600px; }
-        .sync-height-bottom { height: 450px; }
+        
+        /* Desktop Base: 1920x1080 Optimization */
+        @media (min-width: 1024px) {
+            .main-container { max-width: 1920px; height: 100vh; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; }
+            .sync-height-top { height: 500px; }
+            .sync-height-bottom { height: 350px; }
+        }
+
+        /* Mobile Adjustments: Vertical Stacking */
+        @media (max-width: 1023px) {
+            .main-container { width: 100%; padding: 12px; }
+            .sync-height-top, .sync-height-bottom { height: auto; min-height: 300px; }
+            .mobile-order-1 { order: 1; }
+            .mobile-order-2 { order: 2; }
+        }
+
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         #addBtn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="p-2">
+<body class="p-0 md:p-2">
 
     <div class="main-container">
-        <header class="flex justify-between items-center mb-8 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200">
-            <div class="flex items-center gap-6">
+        <header class="flex flex-col lg:flex-row justify-between items-center mb-6 bg-white p-6 rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 gap-6">
+            <div class="flex items-center gap-6 w-full lg:w-auto justify-between lg:justify-start">
                 <div>
-                    <h1 class="text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Wealth<span class="text-indigo-600">Architect</span></h1>
-                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">TIME HORIZONTAL FLOW | By Nutthapoj S. With Gemini</p>
+                    <h1 class="text-2xl lg:text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Wealth<span class="text-indigo-600">Architect</span></h1>
+                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">RESPONSIVE | DATA PERSISTENT</p>
                 </div>
                 <button onclick="resetToDefaults()" class="px-4 py-2 bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-200">
-                    Reset All Data
+                    Reset
                 </button>
             </div>
             
-            <div class="flex items-center gap-10">
+            <div class="flex flex-wrap items-center gap-6 lg:gap-10 w-full lg:w-auto justify-center">
                 <div class="flex flex-col">
-                    <span class="text-[10px] font-black text-slate-400 uppercase mb-1">Time Horizon (Years)</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase mb-1">Horizon (Yrs)</span>
                     <div class="flex items-center gap-3 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
-                        <input type="range" id="globalYearsRange" min="1" max="1000" value="40" class="w-40 h-1.5 accent-indigo-600" oninput="syncTimeline(this.value, 'num')">
-                        <input type="number" id="globalYearsNum" min="1" max="1000" value="40" class="w-20 bg-transparent text-center font-bold text-indigo-600 text-sm outline-none" oninput="syncTimeline(this.value, 'range')">
+                        <input type="range" id="globalYearsRange" min="1" max="100" value="40" class="w-24 lg:w-40 h-1.5 accent-indigo-600" oninput="syncTimeline(this.value, 'num')">
+                        <input type="number" id="globalYearsNum" min="1" max="1000" value="40" class="w-12 lg:w-20 bg-transparent text-center font-bold text-indigo-600 text-sm outline-none" oninput="syncTimeline(this.value, 'range')">
                     </div>
                 </div>
                 <div class="flex flex-col">
                     <span class="text-[10px] font-black text-slate-400 uppercase mb-1">Target Goal</span>
-                    <input type="number" id="wealthGoal" value="1000000" class="bg-slate-50 border rounded-xl px-4 py-1.5 text-xs font-bold w-36 outline-none focus:ring-2 ring-indigo-500" oninput="updateAll()">
+                    <input type="number" id="wealthGoal" value="1000000" class="bg-slate-50 border rounded-xl px-4 py-1.5 text-xs font-bold w-28 lg:w-36 outline-none focus:ring-2 ring-indigo-500" oninput="updateAll()">
                 </div>
                 <div class="flex flex-col">
                     <span class="text-[10px] font-black text-slate-400 uppercase mb-1">Inflation %</span>
                     <div class="flex items-center gap-2">
                         <input type="number" id="inflationRate" value="3.0" step="0.1" class="bg-slate-50 border rounded-xl px-3 py-1.5 text-xs font-bold w-16 outline-none" oninput="updateAll()">
                         <input type="checkbox" id="inflationToggle" class="w-5 h-5 accent-indigo-600" checked onchange="updateAll()">
-                        <span class="text-[10px] font-bold text-slate-600 uppercase">Apply</span>
                     </div>
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-12 gap-8 mb-8">
-            <div class="col-span-4 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-6">
+            <div class="col-span-1 lg:col-span-4 bg-white p-6 lg:p-8 rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col order-2 lg:order-1">
                 <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Investment Scenarios</h2>
-                <div id="portfolioList" class="flex-grow overflow-y-auto pr-3 custom-scrollbar space-y-4"></div>
+                <div id="portfolioList" class="flex-grow overflow-y-auto pr-3 custom-scrollbar space-y-4 max-h-[400px] lg:max-h-none"></div>
                 <button onclick="addPortfolio()" id="addBtn" class="w-full mt-6 py-4 border-2 border-dashed border-slate-200 hover:border-indigo-400 text-slate-400 hover:text-indigo-600 rounded-2xl font-bold text-xs uppercase tracking-widest">Add New Scenario</button>
             </div>
 
-            <div class="col-span-8 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col">
-                <div class="relative w-full flex-grow min-h-0">
+            <div class="col-span-1 lg:col-span-8 bg-white p-6 lg:p-8 rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col order-1 lg:order-2">
+                <div class="relative w-full flex-grow min-h-[300px] lg:min-h-0">
                     <canvas id="compChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-12 gap-8 mb-12">
-            <div class="col-span-6 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden sync-height-bottom flex flex-col">
-                <div class="overflow-y-auto flex-grow custom-scrollbar">
-                    <table class="w-full text-left text-[11px]">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-6">
+            <div class="col-span-1 lg:col-span-6 bg-white rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden sync-height-bottom flex flex-col order-3">
+                <div class="overflow-x-auto lg:overflow-y-auto flex-grow custom-scrollbar">
+                    <table class="w-full text-left text-[11px] min-w-[600px] lg:min-w-0">
                         <thead class="bg-slate-50 text-slate-400 font-black uppercase tracking-widest border-b sticky top-0 z-10">
                             <tr>
                                 <th class="px-6 py-5">Scenario</th>
                                 <th class="px-2 py-5 text-center">Active</th>
-                                <th class="px-4 py-5 text-center">Input (%)</th>
+                                <th class="px-4 py-5 text-center">Input (Total)</th>
                                 <th class="px-4 py-5 text-center">Interest Gained (%)</th>
                                 <th class="px-4 py-5 text-center">Years to Goal</th>
                                 <th class="px-6 py-5 text-right">Wealth</th>
-                                <th class="px-6 py-5 text-right">Return Ratio (%) </th>
+                                <th class="px-6 py-5 text-right">Ratio</th>
                             </tr>
                         </thead>
                         <tbody id="summaryTableBody" class="divide-y divide-slate-50 font-bold"></tbody>
@@ -89,52 +101,50 @@
                 </div>
             </div>
 
-            <div class="col-span-2 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200 flex flex-col items-center sync-height-bottom">
+            <div class="col-span-1 lg:col-span-2 bg-white p-6 rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 flex flex-col items-center sync-height-bottom order-4">
                 <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 shrink-0">Interest Proportion</h3>
-                <div id="pieContainer" class="flex flex-col gap-4 overflow-y-auto custom-scrollbar w-full items-center"></div>
+                <div id="pieContainer" class="flex flex-row lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto custom-scrollbar w-full items-center pb-2 lg:pb-0"></div>
             </div>
 
-            <div class="col-span-4 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200 flex flex-col sync-height-bottom">
+            <div class="col-span-1 lg:col-span-4 bg-white p-6 rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 flex flex-col sync-height-bottom order-5">
                 <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 text-center shrink-0">ROI vs Duration Matrix</h3>
-                <div class="relative w-full flex-grow min-h-0">
+                <div class="relative w-full flex-grow min-h-[300px] lg:min-h-0">
                     <canvas id="bubbleChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <footer class="mt-12 mb-8 bg-slate-100 p-8 rounded-[2rem] border border-slate-200">
-            <div class="flex flex-col md:flex-row gap-8 items-start mb-8">
-                <div class="shrink-0">
+        <footer class="mt-auto bg-slate-100 p-6 lg:p-8 rounded-2xl lg:rounded-[2rem] border border-slate-200 order-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8">
+                <div class="lg:col-span-2">
                     <span class="px-3 py-1 bg-slate-200 text-slate-600 text-[10px] font-black rounded-full uppercase tracking-widest">Model Limitations</span>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="lg:col-span-10 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
                         <h4 class="text-xs font-black text-slate-900 uppercase mb-2 italic underline decoration-indigo-500 underline-offset-4">Fixed Rate Assumptions</h4>
-                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">This app assumes a constant annual ROI. Real markets are volatile; actual year-on-year returns fluctuate significantly, which can drastically alter long-term compounding outcomes.</p>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">Real markets are volatile; actual outcomes may fluctuate significantly.</p>
                     </div>
                     <div>
                         <h4 class="text-xs font-black text-slate-900 uppercase mb-2 italic underline decoration-indigo-500 underline-offset-4">External Costs</h4>
-                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">Calculations do not account for capital gains taxes, brokerage fees, or management expense ratios (MER). These "leakages" often reduce real-world net wealth by 15-30% or more over long periods.</p>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">Does not account for taxes or fees which can reduce net wealth by 15-30%.</p>
                     </div>
                     <div>
                         <h4 class="text-xs font-black text-slate-900 uppercase mb-2 italic underline decoration-indigo-500 underline-offset-4">Predictive Risk</h4>
-                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">The "Real Value" (Inflation Adjuster) uses a static percentage. Hyperinflation or shifts in purchasing power are not modeled. This is a mathematical projection, not financial advice.</p>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">This is a mathematical simulation, not formal financial advice.</p>
                     </div>
                 </div>
             </div>
 
             <div class="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-8">
-                    <div class="flex flex-col">
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Developer Contact</span>
-                        <div class="flex items-center gap-4">
-                            <a href="https://www.facebook.com/nutthapoj" target="_blank" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors">Facebook</a>
-                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                            <a href="mailto:nutthapoj.s@gmail.com" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors">nutthapoj.s@gmail.com</a>
-                        </div>
+                <div class="flex flex-col items-center md:items-start">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Developer Contact</span>
+                    <div class="flex items-center gap-4">
+                        <a href="https://www.facebook.com/nutthapoj" target="_blank" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors">Facebook</a>
+                        <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <a href="mailto:nutthapoj.s@gmail.com" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors">nutthapoj.s@gmail.com</a>
                     </div>
                 </div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Wealth Architect Pro © 2026 | Simulation Only</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] text-center lg:text-right">Wealth Architect Pro © 2026 | Simulation Only</p>
             </div>
         </footer>
     </div>
@@ -145,7 +155,7 @@
         const palette = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6', '#6366f1'];
 
         const DEFAULT_PORTFOLIOS = [
-            { id: 1, name: 'Base Plan', initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: palette[0] }
+            { id: 1, name: 'Base Plan', initial: 10000, monthly: 500, roi: 7, startYear: 0, color: palette[0] }
         ];
 
         let portfolios = [];
@@ -195,7 +205,7 @@
         function addPortfolio() {
             if (portfolios.length >= 10) return;
             const color = palette[portfolios.length % palette.length];
-            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: color });
+            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 5000, monthly: 200, roi: 8, startYear: 0, color: color });
             renderControls(); 
             updateAll();
         }
@@ -296,8 +306,8 @@
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-5 text-slate-900 uppercase text-[10px]">${p.name}</td>
                         <td class="px-2 py-5 text-center">${Math.max(0, maxYears - p.startYear)}y</td>
-                        <td class="px-4 py-5 text-center text-slate-500">$${totalInput.toLocaleString()} (${inputProp}%)</td>
-                        <td class="px-4 py-5 text-center text-indigo-400">$${interestGained.toLocaleString()} (${intProp}%)</td>
+                        <td class="px-4 py-5 text-center text-slate-500">$${totalInput.toLocaleString()}<br>(${inputProp}%)</td>
+                        <td class="px-4 py-5 text-center text-indigo-400">$${interestGained.toLocaleString()}<br>(${intProp}%)</td>
                         <td class="px-4 py-5 text-center text-slate-600">${goalStatus}${checkmark}</td>
                         <td class="px-6 py-5 text-right font-black" style="color: ${p.color}">$${final.y.toLocaleString()}</td>
                         <td class="px-6 py-5 text-right text-emerald-500">${returnRatio}%</td>
@@ -305,7 +315,7 @@
                 `;
 
                 const pDiv = document.createElement('div');
-                pDiv.className = "flex flex-col items-center shrink-0 w-full mb-2";
+                pDiv.className = "flex flex-col items-center shrink-0 w-24 lg:w-full mb-2";
                 pDiv.innerHTML = `<div class="w-14 h-14 relative"><canvas id="pie-${p.id}"></canvas></div><span class="text-[7px] font-black text-slate-400 mt-1 uppercase tracking-tighter text-center truncate w-full px-2">${p.name}</span>`;
                 pieContainer.appendChild(pDiv);
                 
@@ -338,11 +348,7 @@
                     },
                     plugins: { 
                         legend: { display: false }, 
-                        tooltip: { 
-                            callbacks: { 
-                                label: c => `${c.dataset.label}: $${c.parsed.y.toLocaleString()}` 
-                            } 
-                        } 
+                        tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.parsed.y.toLocaleString()}` } } 
                     }
                 }
             });
@@ -368,7 +374,7 @@
                                 label: function(context) {
                                     const data = context.raw;
                                     const wealthFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.wealth);
-                                    return `${context.dataset.label}: ${data.x} active year @ ${data.y}% (Wealth: ${wealthFormatted})`;
+                                    return `${context.dataset.label}: ${data.x}yr @ ${data.y}% (Wealth: ${wealthFormatted})`;
                                 }
                             } 
                         }
