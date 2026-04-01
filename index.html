@@ -38,7 +38,7 @@
             <div class="flex items-center gap-6 w-full lg:w-auto justify-between lg:justify-start">
                 <div>
                     <h1 class="text-2xl lg:text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Wealth<span class="text-indigo-600">Architect</span></h1>
-                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">RESPONSIVE | DATA PERSISTENT</p>
+                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">Simple Sim. | By Nutthapoj S. with Gemini</p>
                 </div>
                 <button onclick="resetToDefaults()" class="px-4 py-2 bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-200">
                     Reset
@@ -47,7 +47,7 @@
             
             <div class="flex flex-wrap items-center gap-6 lg:gap-10 w-full lg:w-auto justify-center">
                 <div class="flex flex-col">
-                    <span class="text-[10px] font-black text-slate-400 uppercase mb-1">Horizon (Yrs)</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase mb-1">Time Horizon (Yrs)</span>
                     <div class="flex items-center gap-3 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
                         <input type="range" id="globalYearsRange" min="1" max="100" value="40" class="w-24 lg:w-40 h-1.5 accent-indigo-600" oninput="syncTimeline(this.value, 'num')">
                         <input type="number" id="globalYearsNum" min="1" max="1000" value="40" class="w-12 lg:w-20 bg-transparent text-center font-bold text-indigo-600 text-sm outline-none" oninput="syncTimeline(this.value, 'range')">
@@ -75,6 +75,7 @@
             </div>
 
             <div class="col-span-1 lg:col-span-8 bg-white p-6 lg:p-8 rounded-2xl lg:rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col order-1 lg:order-2">
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Total Wealth</h2>
                 <div class="relative w-full flex-grow min-h-[300px] lg:min-h-0">
                     <canvas id="compChart"></canvas>
                 </div>
@@ -89,11 +90,11 @@
                             <tr>
                                 <th class="px-6 py-5">Scenario</th>
                                 <th class="px-2 py-5 text-center">Active</th>
-                                <th class="px-4 py-5 text-center">Input (Total)</th>
+                                <th class="px-4 py-5 text-center">Input (%)</th>
                                 <th class="px-4 py-5 text-center">Interest Gained (%)</th>
                                 <th class="px-4 py-5 text-center">Years to Goal</th>
-                                <th class="px-6 py-5 text-right">Wealth</th>
-                                <th class="px-6 py-5 text-right">Ratio</th>
+                                <th class="px-6 py-5 text-right">Total Wealth</th>
+                                <th class="px-6 py-5 text-right">Ratio (%)</th>
                             </tr>
                         </thead>
                         <tbody id="summaryTableBody" class="divide-y divide-slate-50 font-bold"></tbody>
@@ -155,7 +156,7 @@
         const palette = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6', '#6366f1'];
 
         const DEFAULT_PORTFOLIOS = [
-            { id: 1, name: 'Base Plan', initial: 10000, monthly: 500, roi: 7, startYear: 0, color: palette[0] }
+            { id: 1, name: 'Base Plan', initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: palette[0] }
         ];
 
         let portfolios = [];
@@ -205,7 +206,7 @@
         function addPortfolio() {
             if (portfolios.length >= 10) return;
             const color = palette[portfolios.length % palette.length];
-            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 5000, monthly: 200, roi: 8, startYear: 0, color: color });
+            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: color });
             renderControls(); 
             updateAll();
         }
