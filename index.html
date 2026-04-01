@@ -10,16 +10,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         .main-container { max-width: 1920px; margin: 0 auto; padding: 24px; }
-        
-        /* UI/UX Best Practice: Fixed Aspect Ratios for Dashboards */
-        .sync-height-top { height: 640px; }
-        .sync-height-bottom { height: 420px; }
-        
+        .sync-height-top { height: 600px; }
+        .sync-height-bottom { height: 450px; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-
-        /* Smooth Transition for the Add Button */
         #addBtn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
@@ -27,9 +22,14 @@
 
     <div class="main-container">
         <header class="flex justify-between items-center mb-8 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200">
-            <div>
-                <h1 class="text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Wealth<span class="text-indigo-600">Architect</span></h1>
-                <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">Made with Gemini</p>
+            <div class="flex items-center gap-6">
+                <div>
+                    <h1 class="text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Wealth<span class="text-indigo-600">Architect</span></h1>
+                    <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em]">HORIZONTAL FLOW | DATA PERSISTENT</p>
+                </div>
+                <button onclick="resetToDefaults()" class="px-4 py-2 bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-200">
+                    Reset All Data
+                </button>
             </div>
             
             <div class="flex items-center gap-10">
@@ -56,15 +56,13 @@
         </header>
 
         <div class="grid grid-cols-12 gap-8 mb-8">
-            <div class="col-span-5 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col">
+            <div class="col-span-4 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col">
                 <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Investment Scenarios</h2>
-                
                 <div id="portfolioList" class="flex-grow overflow-y-auto pr-3 custom-scrollbar space-y-4"></div>
-                
                 <button onclick="addPortfolio()" id="addBtn" class="w-full mt-6 py-4 border-2 border-dashed border-slate-200 hover:border-indigo-400 text-slate-400 hover:text-indigo-600 rounded-2xl font-bold text-xs uppercase tracking-widest">Add New Scenario</button>
             </div>
 
-            <div class="col-span-7 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col">
+            <div class="col-span-8 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 sync-height-top flex flex-col">
                 <div class="relative w-full flex-grow min-h-0">
                     <canvas id="compChart"></canvas>
                 </div>
@@ -72,16 +70,17 @@
         </div>
 
         <div class="grid grid-cols-12 gap-8">
-            <div class="col-span-5 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden sync-height-bottom flex flex-col">
+            <div class="col-span-6 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden sync-height-bottom flex flex-col">
                 <div class="overflow-y-auto flex-grow custom-scrollbar">
                     <table class="w-full text-left text-[11px]">
                         <thead class="bg-slate-50 text-slate-400 font-black uppercase tracking-widest border-b sticky top-0 z-10">
                             <tr>
                                 <th class="px-6 py-5">Scenario</th>
                                 <th class="px-2 py-5 text-center">Active</th>
-                                <th class="px-4 py-5 text-center">Input (Prop)</th>
-                                <th class="px-4 py-5 text-center">Interest (Prop)</th>
+                                <th class="px-4 py-5 text-center">Interest Gained (%)</th>
+                                <th class="px-4 py-5 text-center">Years to Goal</th>
                                 <th class="px-6 py-5 text-right">Wealth</th>
+                                <th class="px-6 py-5 text-right">Return Ratio</th>
                             </tr>
                         </thead>
                         <tbody id="summaryTableBody" class="divide-y divide-slate-50 font-bold"></tbody>
@@ -89,16 +88,15 @@
                 </div>
             </div>
 
-            <div class="col-span-7 grid grid-cols-12 gap-8 sync-height-bottom">
-                <div class="col-span-4 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 h-full flex flex-col items-center overflow-y-auto custom-scrollbar">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 shrink-0">Interest Proportion</h3>
-                    <div id="pieContainer" class="flex flex-wrap gap-6 justify-center w-full"></div>
-                </div>
-                <div class="col-span-8 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 h-full flex flex-col">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 text-center shrink-0">ROI vs Duration Matrix</h3>
-                    <div class="relative w-full flex-grow min-h-0">
-                        <canvas id="bubbleChart"></canvas>
-                    </div>
+            <div class="col-span-2 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200 flex flex-col items-center sync-height-bottom">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 shrink-0">Interest Proportion</h3>
+                <div id="pieContainer" class="flex flex-col gap-4 overflow-y-auto custom-scrollbar w-full items-center"></div>
+            </div>
+
+            <div class="col-span-4 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200 flex flex-col sync-height-bottom">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 text-center shrink-0">ROI vs Duration Matrix</h3>
+                <div class="relative w-full flex-grow min-h-0">
+                    <canvas id="bubbleChart"></canvas>
                 </div>
             </div>
         </div>
@@ -109,9 +107,46 @@
         let pieCharts = [];
         const palette = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6', '#6366f1'];
 
-        let portfolios = [
+        const DEFAULT_PORTFOLIOS = [
             { id: 1, name: 'Base Plan', initial: 10000, monthly: 500, roi: 7, startYear: 0, color: palette[0] }
         ];
+
+        let portfolios = [];
+
+        function saveToStorage() {
+            const data = {
+                portfolios,
+                config: {
+                    years: document.getElementById('globalYearsNum').value,
+                    goal: document.getElementById('wealthGoal').value,
+                    inflation: document.getElementById('inflationRate').value,
+                    infToggle: document.getElementById('inflationToggle').checked
+                }
+            };
+            localStorage.setItem('wealthArchitectData', JSON.stringify(data));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('wealthArchitectData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                portfolios = parsed.portfolios;
+                document.getElementById('globalYearsNum').value = parsed.config.years;
+                document.getElementById('globalYearsRange').value = parsed.config.years;
+                document.getElementById('wealthGoal').value = parsed.config.goal;
+                document.getElementById('inflationRate').value = parsed.config.inflation;
+                document.getElementById('inflationToggle').checked = parsed.config.infToggle;
+            } else {
+                portfolios = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIOS));
+            }
+        }
+
+        function resetToDefaults() {
+            if (confirm("Reset all data?")) {
+                localStorage.removeItem('wealthArchitectData');
+                location.reload();
+            }
+        }
 
         function syncTimeline(val, target) {
             let cleanVal = Math.min(1000, Math.max(1, parseInt(val) || 1));
@@ -120,31 +155,16 @@
             updateAll();
         }
 
-        function toggleAddButton() {
-            const btn = document.getElementById('addBtn');
-            if (portfolios.length >= 10) {
-                btn.style.opacity = '0';
-                btn.style.pointerEvents = 'none';
-                btn.style.marginTop = '-50px'; // Collapse space
-            } else {
-                btn.style.opacity = '1';
-                btn.style.pointerEvents = 'auto';
-                btn.style.marginTop = '1.5rem';
-            }
-        }
-
         function addPortfolio() {
             if (portfolios.length >= 10) return;
             const color = palette[portfolios.length % palette.length];
-            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 10000, monthly: 1000, roi: 7, startYear: 0, color: color });
+            portfolios.push({ id: Date.now(), name: `Plan ${portfolios.length + 1}`, initial: 5000, monthly: 200, roi: 8, startYear: 0, color: color });
             renderControls(); 
             updateAll();
-            const list = document.getElementById('portfolioList');
-            setTimeout(() => list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' }), 50);
         }
 
         function removePortfolio(id) {
-            if (portfolios.length <= 1) return;
+            if (id === 1 || portfolios.length <= 1) return;
             portfolios = portfolios.filter(p => p.id !== id);
             renderControls(); 
             updateAll();
@@ -160,6 +180,7 @@
             const container = document.getElementById('portfolioList');
             container.innerHTML = '';
             portfolios.forEach((p) => {
+                const isBasePlan = p.id === 1;
                 container.innerHTML += `
                     <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-sm shrink-0">
                         <div class="flex justify-between items-center mb-4">
@@ -167,22 +188,21 @@
                                 <div class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: ${p.color}"></div>
                                 <input type="text" value="${p.name}" oninput="updateVal(${p.id}, 'name', this.value)" class="font-black text-xs outline-none bg-transparent uppercase tracking-tight w-full">
                             </div>
-                            ${portfolios.length > 1 ? `<button onclick="removePortfolio(${p.id})" class="text-slate-300 hover:text-red-500 font-bold text-lg ml-2 transition-colors">✕</button>` : ''}
+                            ${!isBasePlan ? `<button onclick="removePortfolio(${p.id})" class="text-slate-300 hover:text-red-500 font-bold text-lg ml-2 transition-colors">✕</button>` : ''}
                         </div>
                         <div class="grid grid-cols-4 gap-4">
                             <div class="flex flex-col"><span class="text-[8px] font-black text-slate-400 uppercase mb-1">Start Yr</span>
-                                <input type="number" value="${p.startYear}" oninput="updateVal(${p.id}, 'startYear', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none focus:ring-1 ring-indigo-400"></div>
+                                <input type="number" value="${p.startYear}" oninput="updateVal(${p.id}, 'startYear', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none"></div>
                             <div class="flex flex-col"><span class="text-[8px] font-black text-slate-400 uppercase mb-1">ROI %</span>
-                                <input type="number" value="${p.roi}" oninput="updateVal(${p.id}, 'roi', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none focus:ring-1 ring-indigo-400"></div>
+                                <input type="number" value="${p.roi}" oninput="updateVal(${p.id}, 'roi', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none"></div>
                             <div class="flex flex-col"><span class="text-[8px] font-black text-slate-400 uppercase mb-1">Init $</span>
-                                <input type="number" value="${p.initial}" oninput="updateVal(${p.id}, 'initial', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none focus:ring-1 ring-indigo-400"></div>
+                                <input type="number" value="${p.initial}" oninput="updateVal(${p.id}, 'initial', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none"></div>
                             <div class="flex flex-col"><span class="text-[8px] font-black text-slate-400 uppercase mb-1">Monthly $</span>
-                                <input type="number" value="${p.monthly}" oninput="updateVal(${p.id}, 'monthly', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none focus:ring-1 ring-indigo-400"></div>
+                                <input type="number" value="${p.monthly}" oninput="updateVal(${p.id}, 'monthly', this.value)" class="bg-white border rounded-lg p-2 text-[10px] font-bold outline-none"></div>
                         </div>
                     </div>
                 `;
             });
-            toggleAddButton();
         }
 
         function updateAll() {
@@ -201,16 +221,14 @@
 
             let globalPeakWealth = 1; 
             let maxROISeen = 0;
-            let maxActiveYearsSeen = 0;
             const onePlusInf = 1 + infRate;
 
             const datasets = portfolios.map((p) => {
                 const dataPoints = [];
                 const onePlusR = p.roi > 0 ? Math.pow(1 + (p.roi / 100), 1/12) : 1;
                 const r = p.roi > 0 ? onePlusR - 1 : 0;
-                const activeYrs = Math.max(0, maxYears - p.startYear);
+                let yearReachedGoal = null;
                 maxROISeen = Math.max(maxROISeen, p.roi);
-                maxActiveYearsSeen = Math.max(maxActiveYearsSeen, activeYrs);
 
                 for (let year = 0; year <= maxYears; year++) {
                     if (year < p.startYear) {
@@ -220,77 +238,66 @@
                         const yrsSinceStart = year - p.startYear;
                         let nominal = (r === 0) ? (p.initial + (p.monthly * months)) : ((p.initial * Math.pow(onePlusR, months)) + (p.monthly * ((Math.pow(onePlusR, months) - 1) / r)));
                         let realVal = useInflation ? nominal / Math.pow(onePlusInf, yrsSinceStart) : nominal;
+                        
                         dataPoints.push({ x: year, y: realVal, p: p.initial + (p.monthly * months) });
                         if (realVal > globalPeakWealth) globalPeakWealth = realVal;
+                        if (yearReachedGoal === null && realVal >= goal) yearReachedGoal = year;
                     }
                 }
 
                 const final = dataPoints[dataPoints.length - 1];
-                const inputPerc = final.y > 0 ? Math.min(100, (final.p / final.y * 100)) : 100;
-                const intPerc = Math.max(0, 100 - inputPerc).toFixed(1);
+                const totalInput = final.p;
+                const interestGained = Math.max(0, final.y - totalInput);
+                const intProp = final.y > 0 ? ((interestGained / final.y) * 100).toFixed(1) : "0";
+                const returnRatio = totalInput > 0 ? ((final.y / totalInput) * 100).toFixed(0) : "0";
+
+                const goalStatus = yearReachedGoal !== null ? `${yearReachedGoal}y` : "—";
+                const checkmark = (yearReachedGoal !== null && yearReachedGoal <= maxYears) ? `<span class="ml-2 text-emerald-500">✔</span>` : '';
 
                 tableBody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-5 text-slate-900 uppercase text-[10px]">${p.name}</td>
-                        <td class="px-2 py-5 text-center">${activeYrs}y</td>
-                        <td class="px-4 py-5 text-center text-slate-500">$${final.p.toLocaleString()} (${inputPerc.toFixed(1)}%)</td>
-                        <td class="px-4 py-5 text-center text-indigo-400">$${Math.max(0, final.y - final.p).toLocaleString()} (${intPerc}%)</td>
+                        <td class="px-2 py-5 text-center">${Math.max(0, maxYears - p.startYear)}y</td>
+                        <td class="px-4 py-5 text-center text-indigo-400">$${interestGained.toLocaleString()} (${intProp}%)</td>
+                        <td class="px-4 py-5 text-center text-slate-600">${goalStatus}${checkmark}</td>
                         <td class="px-6 py-5 text-right font-black" style="color: ${p.color}">$${final.y.toLocaleString()}</td>
+                        <td class="px-6 py-5 text-right text-emerald-500">${returnRatio}%</td>
                     </tr>
                 `;
 
+                // Pie charts in middle column
                 const pDiv = document.createElement('div');
-                pDiv.className = "flex flex-col items-center shrink-0";
-                pDiv.innerHTML = `<div class="w-16 h-16 relative"><canvas id="pie-${p.id}"></canvas></div><span class="text-[7px] font-black text-slate-400 mt-2 uppercase tracking-tighter w-[70px] text-center truncate">${p.name}</span>`;
+                pDiv.className = "flex flex-col items-center shrink-0 w-full mb-2";
+                pDiv.innerHTML = `<div class="w-14 h-14 relative"><canvas id="pie-${p.id}"></canvas></div><span class="text-[7px] font-black text-slate-400 mt-1 uppercase tracking-tighter text-center truncate w-full px-2">${p.name}</span>`;
                 pieContainer.appendChild(pDiv);
                 
                 const pc = new Chart(document.getElementById(`pie-${p.id}`).getContext('2d'), {
                     type: 'doughnut',
-                    data: { datasets: [{ data: [final.p, Math.max(0, final.y - final.p)], backgroundColor: ['#f1f5f9', p.color], borderWidth: 0 }] },
+                    data: { datasets: [{ data: [totalInput, interestGained], backgroundColor: ['#f1f5f9', p.color], borderWidth: 0 }] },
                     options: { cutout: '75%', animation: false, plugins: { tooltip: { enabled: false }, legend: { display: false } } },
                     plugins: [{ id: 'centerText', afterDraw: (chart) => {
                         const { ctx, width, height } = chart;
-                        ctx.restore(); ctx.font = "bold 9px Inter"; ctx.textBaseline = "middle"; ctx.fillStyle = p.color;
-                        const text = intPerc + "%"; const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        ctx.restore(); ctx.font = "bold 8px Inter"; ctx.textBaseline = "middle"; ctx.fillStyle = p.color;
+                        const text = intProp + "%"; const textX = Math.round((width - ctx.measureText(text).width) / 2);
                         const textY = height / 2; ctx.fillText(text, textX, textY); ctx.save();
                     } }]
                 });
                 pieCharts.push(pc);
 
-                return { label: p.name, data: dataPoints, borderColor: p.color + '99', borderWidth: 3.5, pointRadius: 0, tension: 0.2, finalWealth: final.y, activeYrs: activeYrs, roi: p.roi, color: p.color };
+                return { label: p.name, data: dataPoints, borderColor: p.color + '99', borderWidth: 3.5, pointRadius: 0, tension: 0.2, finalWealth: final.y, activeYrs: Math.max(0, maxYears - p.startYear), roi: p.roi, color: p.color };
             });
 
             if (myChart) myChart.destroy();
             myChart = new Chart(document.getElementById('compChart').getContext('2d'), {
                 type: 'line',
-                data: { datasets: [...datasets, { 
-                    label: 'Goal', data: [{x:0, y:goal}, {x:maxYears, y:goal}], 
-                    borderColor: '#cbd5e1', borderDash: [6, 6], borderWidth: 2, pointRadius: 0 
-                }] },
+                data: { datasets: [...datasets, { label: 'Goal', data: [{x:0, y:goal}, {x:maxYears, y:goal}], borderColor: '#cbd5e1', borderDash: [6, 6], borderWidth: 2, pointRadius: 0 }] },
                 options: {
                     responsive: true, maintainAspectRatio: false, animation: false,
-                    // Group multiple lines in the popup
-                    interaction: { mode: 'index', intersect: false },
                     scales: {
-                        x: { type: 'linear', min: 0, max: maxYears, title: { display: true, text: 'Horizon (Years)', font: { weight: '900', size: 10 } } },
-                        y: { beginAtZero: true, max: globalPeakWealth, title: { display: true, text: 'Total Wealth', font: { weight: '900', size: 10 } }, ticks: { callback: v => '$' + v.toLocaleString() } }
+                        x: { type: 'linear', min: 0, max: maxYears },
+                        y: { beginAtZero: true, max: globalPeakWealth, ticks: { callback: v => '$' + v.toLocaleString() } }
                     },
-                    plugins: { 
-                        title: { display: true, text: 'Accumulated Wealth', font: { size: 16, weight: '900' } }, 
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) {
-                                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.parsed.y.toLocaleString()}` } } }
                 }
             });
 
@@ -299,20 +306,33 @@
                 type: 'bubble',
                 data: { datasets: datasets.map(d => ({
                     label: d.label,
-                    data: [{ x: d.activeYrs, y: d.roi, r: Math.max(5, Math.sqrt(d.finalWealth / globalPeakWealth) * 45) }],
+                    data: [{ x: d.activeYrs, y: d.roi, r: Math.max(4, Math.sqrt(d.finalWealth / globalPeakWealth) * 40), wealth: d.finalWealth }],
                     backgroundColor: d.color + '66', borderColor: d.color, borderWidth: 1
                 })) },
                 options: {
                     responsive: true, maintainAspectRatio: false, animation: false,
                     scales: {
-                        x: { title: { display: true, text: 'Years Active', font: { weight: 'bold' } }, min: 0, max: maxActiveYearsSeen + 20 },
-                        y: { title: { display: true, text: 'ROI %', font: { weight: 'bold' } }, min: 0, max: maxROISeen + 10 }
+                        x: { title: { display: true, text: 'Years Active', font: { size: 9 } }, min: 0, max: maxYears + 20 },
+                        y: { title: { display: true, text: 'ROI %', font: { size: 9 } }, min: 0, max: maxROISeen + 10 }
                     },
-                    plugins: { legend: { display: false } }
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { 
+                            callbacks: { 
+                                label: function(context) {
+                                    const data = context.raw;
+                                    const wealthFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.wealth);
+                                    return `${context.dataset.label}: ${data.x}yr @ ${data.y}% (Wealth: ${wealthFormatted})`;
+                                }
+                            } 
+                        }
+                    }
                 }
             });
+            saveToStorage();
         }
 
+        loadFromStorage();
         renderControls();
         updateAll();
     </script>
